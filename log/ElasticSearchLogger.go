@@ -172,7 +172,7 @@ func (c *ElasticSearchLogger) Open(ctx context.Context, correlationId string) (e
 	}
 	c.client = elasticsearch
 
-	err = c.createIndexIfNeeded(correlationId, true)
+	err = c.createIndexIfNeeded(ctx, correlationId, true)
 	if err == nil {
 		c.timer = setInterval(func() { c.Dump(ctx) }, c.Interval, true)
 	}
@@ -211,14 +211,14 @@ func (c *ElasticSearchLogger) getCurrentIndex() string {
 	return c.index + "-" + now.UTC().Format("20060102")
 }
 
-func (c *ElasticSearchLogger) createIndexIfNeeded(correlationId string, force bool) (err error) {
+func (c *ElasticSearchLogger) createIndexIfNeeded(ctx context.Context, correlationId string, force bool) (err error) {
 	newIndex := c.getCurrentIndex()
 	if !force && c.currentIndex == newIndex {
 		return nil
 	}
 
 	c.currentIndex = newIndex
-	exists, err := c.client.Indices.Exists([]string{c.currentIndex})
+	exists, err := c.client.Indices.Exists([]string{c.currentIndex}, c.client.Indices.Exists.WithContext(ctx))
 	if err != nil || exists.StatusCode == 404 {
 		return err
 	}
@@ -233,6 +233,7 @@ func (c *ElasticSearchLogger) createIndexIfNeeded(correlationId string, force bo
 	}`
 
 	resp, err := c.client.Indices.Create(c.currentIndex,
+		c.client.Indices.Create.WithContext(ctx),
 		c.client.Indices.Create.WithBody(strings.NewReader(indBody)),
 	)
 	if resp != nil {
@@ -299,7 +300,7 @@ func (c *ElasticSearchLogger) Save(ctx context.Context, messages []clog.LogMessa
 		return nil
 	}
 
-	err = c.createIndexIfNeeded("elasticsearch_logger", false)
+	err = c.createIndexIfNeeded(ctx, "elasticsearch_logger", false)
 
 	if err != nil {
 		return nil
@@ -319,7 +320,7 @@ func (c *ElasticSearchLogger) Save(ctx context.Context, messages []clog.LogMessa
 		buf.Write(data)
 	}
 
-	resp, err := c.client.Bulk(bytes.NewReader(buf.Bytes()), c.client.Bulk.WithContext(ctx))
+	resp, err := c.client.Bulk(bytes.NewReader(buf.Bytes()), c.client.Bulk.WithContext(ctx), c.client.Bulk.WithIndex(c.currentIndex))
 	if err != nil {
 		c.Logger.Error(ctx, "", err, "Failure indexing batch %s", err.Error())
 	}
