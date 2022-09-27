@@ -10,7 +10,7 @@ The module contains the following packages:
 
 <a name="links"></a> Quick links:
 
-* [Configuration](https://www.pipservices.org/recipies/configuration)
+* [Configuration](http://docs.pipservices.org/concepts/configuration/)
 * [Logging](http://docs.pipservices.org/getting_started/recipes/logging/)
 * [Virtual memory configuration](https://www.elastic.co/guide/en/elasticsearch/reference/current/vm-max-map-count.html)
 * [API Reference](https://godoc.org/github.com/pip-services3-gox/pip-services3-elasticsearch-gox/)
@@ -23,6 +23,48 @@ The module contains the following packages:
 Get the package from the Github repository:
 ```bash
 go get -u github.com/pip-services3-gox/pip-services3-elasticsearch-gox@latest
+```
+
+Microservice components shall perform logging usual way using CompositeLogger component. The CompositeLogger will get ElasticSearchLogger from references and will redirect log messages there among other destinations.
+
+```go
+import (
+	"context"
+
+	"github.com/pip-services3-gox/pip-services3-commons-gox/config"
+	"github.com/pip-services3-gox/pip-services3-commons-gox/refer"
+	"github.com/pip-services3-gox/pip-services3-components-gox/log"
+)
+
+type MyComponent struct {
+	logger *log.CompositeLogger
+}
+
+func (c *MyComponent) Configure(ctx context.Context, config *config.ConfigParams) {
+	c.logger.Configure(ctx, config)
+}
+func (c *MyComponent) SetReferences(ctx context.Context, references refer.IReferences) {
+	c.logger.SetReferences(ctx, references)
+}
+
+func (c *MyComponent) MyMethod(ctx context.Context, correlationId string, param1 any) (any, error) {
+	c.logger.Trace(ctx, correlationId, "Executed method mycomponent.mymethod")
+	// ....
+}
+```
+
+Configuration for your microservice that includes ElasticSearch logger may look the following way.
+
+```yml
+...
+{{#if ELASTICSEARCH_ENABLED}}
+- descriptor: pip-services:logger:elasticsearch:default:1.0
+  connection:
+    uri: {{{ELASTICSEARCG_SERVICE_URI}}}
+    host: {{{ELASTICSEARCH_SERVICE_HOST}}}{{#unless ELASTICSEARCH_SERVICE_HOST}}localhost{{/unless}}
+    port: {{ELASTICSEARCG_SERVICE_PORT}}{{#unless ELASTICSEARCH_SERVICE_PORT}}9200{{/unless}}\ 
+{{/if}}
+...
 ```
 
 ## Develop
