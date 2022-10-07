@@ -7,8 +7,8 @@ github.com/elastic/go-elasticsearch/v8 v8.4.0 h1:Rn1mcqaIMcNT43hnx2H62cIFZ+B6mjW
 github.com/elastic/go-elasticsearch/v8 v8.4.0/go.mod h1:yY52i2Vj0unLz+N3Nwx1gM5LXwoj3h2dgptNGBYkMLA=
 github.com/google/uuid v1.3.0 h1:t6JiXgmwXMjEs8VusXIJk2BXHsn+wx8BZdTaoZ5fu7I=
 github.com/google/uuid v1.3.0/go.mod h1:TIyPZe4MgqvfeYDBFedMoGGpEw/LqOeaOT+nhxU+yHo=
-github.com/pip-services3-gox/pip-services3-commons-gox v1.0.7 h1:VMqDkHl1Zp+qY/r80UHWuvPckxcfp6BstgfolGQ3cjc=
-github.com/pip-services3-gox/pip-services3-commons-gox v1.0.7/go.mod h1:XOODsMiG196E8/Uo4tRDqjHH3bGZ9ZfcZhKS+BSznOY=
+github.com/pip-services3-gox/pip-services3-commons-gox v1.0.8 h1:FNbEQ+kA8r3vijyB0aZqzmRBBSvHV4sIdcZqoHrDqqg=
+github.com/pip-services3-gox/pip-services3-commons-gox v1.0.8/go.mod h1:XOODsMiG196E8/Uo4tRDqjHH3bGZ9ZfcZhKS+BSznOY=
 github.com/pip-services3-gox/pip-services3-components-gox v1.0.7 h1:tro7B7/LqjHYRHL1TtjEt1Mswj8OeOrlgSyqPIpCh+Q=
 github.com/pip-services3-gox/pip-services3-components-gox v1.0.7/go.mod h1:5tP0iG3jnXta6lKC5kBnJ1Bx8A4QIWrL5955QsbzJzM=
 github.com/pip-services3-gox/pip-services3-rpc-gox v1.0.3 h1:oMeXP43WjCRieVmheX6IYM96exOGLL+X91AWBUP2+3g=
